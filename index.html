@@ -29,7 +29,6 @@
             font-size: clamp(14px, 2vw, 18px);
         }
         .container {
-            top: 5%;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -46,13 +45,6 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: none;
-            text-align: center;
-        }
-        .slide {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
         .slide img {
             width: 100%;
@@ -65,7 +57,6 @@
             border: none;
             color: white;
             padding: 12px 20px;
-            font-size: clamp(14px, 3vw, 18px);
             cursor: pointer;
             margin-top: 10px;
             border-radius: 5px;
@@ -74,6 +65,23 @@
         .btn:hover {
             background-color: #ff3385;
         }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #ff3385;
+            font-weight: bold;
+        }
+        .prev {
+            left: 10px;
+        }
+        .next {
+            right: 10px;
+        }
         #happy-birthday {
             position: absolute;
             top: 5%;
@@ -81,7 +89,6 @@
             transform: translateX(-50%);
             font-family: 'Pacifico', cursive;
             font-size: clamp(24px, 5vw, 40px);
-            font-weight: bold;
             color: #ff0066;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             display: none;
@@ -105,11 +112,9 @@
                 transform: translateY(100vh);
             }
         }
-
     </style>
 </head>
 <body>
-    
     <div class="container" id="container">
         <h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>
         <p>Wishing you a day filled with love, laughter, and joy as wonderful as you are! 
@@ -119,30 +124,27 @@
 
         <p>With love,
         <br> Camil Grace 🎈🎁🎊</p>
-
         <button class="btn" id="startBtn">Click for a Surprise!</button>
     </div>
 
-    <div class="slideshow-container" id="slideshow-container"></div>
     <div id="happy-birthday">🎉 Happy Birthday, Tita Gina! 🎉</div>
-    
+
+    <div class="slideshow-container" id="slideshow-container">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">&lt;</button>
+        <div class="slide" id="slide"></div>
+        <button class="nav-btn next" onclick="changeSlide(1)">&gt;</button>
+    </div>
+
     <script>
         document.getElementById("startBtn").addEventListener("click", () => {
-            let happyBirthdayText = document.getElementById("happy-birthday");
-            happyBirthdayText.style.display = "block"; // Show the text
-    
-            document.getElementById("container").style.display = "none"; // Hide main content
-            document.getElementById("slideshow-container").style.display = "block"; // Show slideshow
-    
-            preloadImages().then(() => {
-                generateConfetti(); // Start confetti after preload
-                createSlides();
-                setTimeout(startSlideshow, 500); // Delay before starting
-            });
+            document.getElementById("container").style.display = "none";
+            document.getElementById("slideshow-container").style.display = "block";
+            document.getElementById("happy-birthday").style.display = "block";
+            generateConfetti();
+            showSlide(0);
         });
-    
-        const images = Array.from({ length: 53 }, (_, i) => `images/${i + 1}.png`);
-    
+
+        const images = ["1.png", "2.png", "3.png"];
         const wishes = [
             "May your birthday be filled with joy and laughter!",
             "Wishing you good health and happiness!",
@@ -174,102 +176,55 @@
             "Lamentations 3:22-23 - 'The steadfast love of the Lord never ceases; His mercies never come to an end; they are new every morning.'",
             "Colossians 3:15 - 'Let the peace of Christ rule in your hearts, since as members of one body you were called to peace.'"
         ];
-    
-        function preloadImages() {
-            return Promise.all(images.map(src => new Promise(resolve => {
-                const img = new Image();
-                img.src = src;
-                img.onload = resolve; // Resolve when loaded
-                img.onerror = resolve; // Resolve even if failed
-            })));
+
+        let slideIndex = 0;
+
+        function showSlide(index) {
+            slideIndex = index;
+            const slide = document.getElementById("slide");
+            slide.innerHTML = `
+                <img src="images/${images[index]}" alt="Slide">
+                <p>${wishes[index]}</p>
+                <p>${verses[index]}</p>
+            `;
         }
-    
-        function createSlides() {
-            const slideshowContainer = document.getElementById("slideshow-container");
-            slideshowContainer.innerHTML = ""; // Clear previous slides
-    
-            images.forEach((imgSrc, index) => {
-                const slide = document.createElement("div");
-                slide.className = "slide";
-                
-                const img = document.createElement("img");
-                img.dataset.src = imgSrc; // Lazy load (set later)
-                
-                const wish = document.createElement("p");
-                wish.innerText = wishes[index % wishes.length];
-                
-                const verse = document.createElement("p");
-                verse.innerText = verses[index % verses.length];
-                
-                slide.appendChild(img);
-                slide.appendChild(wish);
-                slide.appendChild(verse);
-                slideshowContainer.appendChild(slide);
-            });
-        }
-    
-        function startSlideshow() {
-            let slideIndex = 0;
-            const slides = document.getElementsByClassName("slide");
-    
-            function showSlide(index) {
-                slides[index].style.display = "flex";
-                const img = slides[index].querySelector("img");
-                if (!img.src) img.src = img.dataset.src; // Assign source lazily
-            }
-    
+
+        function changeSlide(direction) {
+            slideIndex = (slideIndex + direction + images.length) % images.length;
             showSlide(slideIndex);
-            setInterval(() => {
-                slides[slideIndex].style.display = "none";
-                slideIndex = (slideIndex + 1) % slides.length;
-                showSlide(slideIndex);
-            }, 5000); // 5 seconds per slide
         }
-    
+
         function generateConfetti() {
             const confettiContainer = document.createElement("div");
-            confettiContainer.style.position = "fixed";  // Ensures confetti stays on screen
+            confettiContainer.style.position = "fixed";
             confettiContainer.style.top = "0";
             confettiContainer.style.left = "0";
             confettiContainer.style.width = "100vw";
             confettiContainer.style.height = "100vh";
             confettiContainer.style.overflow = "hidden";
             confettiContainer.style.pointerEvents = "none";
-            confettiContainer.style.zIndex = "9999";  // Ensures confetti is on top
+            confettiContainer.style.zIndex = "9999";
             document.body.appendChild(confettiContainer);
-    
+
             function createConfettiPiece() {
                 const confetti = document.createElement("div");
                 confetti.className = "confetti";
                 confetti.style.position = "absolute";
-                confetti.style.width = "6px";  
+                confetti.style.width = "6px";
                 confetti.style.height = "6px";
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;  // Random colors
-                confetti.style.top = "0"; 
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.top = "0";
                 confetti.style.left = `${Math.random() * 100}vw`;
                 confetti.style.opacity = Math.random();
                 confetti.style.borderRadius = "50%";
-    
-                // Random fall duration for each piece
-                const duration = 3 + Math.random() * 2;
-                confetti.style.animation = `fall ${duration}s linear forwards`;
-    
+                confetti.style.animation = `fall ${3 + Math.random() * 2}s linear forwards`;
+
                 confettiContainer.appendChild(confetti);
-    
-                // Remove confetti after animation completes
-                setTimeout(() => {
-                    confetti.remove();
-                }, duration * 1000);
+                setTimeout(() => confetti.remove(), 5000);
             }
-    
-            let confettiInterval = setInterval(createConfettiPiece, 200);  // Reduce confetti spawn rate
-    
-            // Stop confetti after 15 seconds for performance reasons
-            setTimeout(() => {
-                clearInterval(confettiInterval);
-            }, 15000);
+
+            setInterval(createConfettiPiece, 200);
         }
     </script>
-    
 </body>
 </html>
