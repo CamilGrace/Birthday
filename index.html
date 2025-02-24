@@ -130,20 +130,19 @@
         document.getElementById("startBtn").addEventListener("click", () => {
             let happyBirthdayText = document.getElementById("happy-birthday");
             happyBirthdayText.style.display = "block"; // Show the text
-
+    
             document.getElementById("container").style.display = "none"; // Hide main content
             document.getElementById("slideshow-container").style.display = "block"; // Show slideshow
-            generateConfetti(); // Start confetti
-
-            createSlides();
-            setTimeout(startSlideshow, 500); // Start slideshow after slight delay
+    
+            preloadImages().then(() => {
+                generateConfetti(); // Start confetti after preload
+                createSlides();
+                setTimeout(startSlideshow, 500); // Delay before starting
+            });
         });
-
-        const images = [];
-        for (let i = 1; i <= 53; i++) {
-            images.push(`images/${i}.png`);
-        }
-
+    
+        const images = Array.from({ length: 53 }, (_, i) => `images/${i + 1}.png`);
+    
         const wishes = [
             "May your birthday be filled with joy and laughter!",
             "Wishing you good health and happiness!",
@@ -159,7 +158,7 @@
             "Every day is a blessing, but today is extra special because it’s your birthday!",
             "May your heart always be filled with the peace and joy that comes from God’s love!"
         ];
-
+    
         const verses = [
             "Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.",
             "Jeremiah 29:11 - 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'",
@@ -175,16 +174,26 @@
             "Lamentations 3:22-23 - 'The steadfast love of the Lord never ceases; His mercies never come to an end; they are new every morning.'",
             "Colossians 3:15 - 'Let the peace of Christ rule in your hearts, since as members of one body you were called to peace.'"
         ];
-
+    
+        function preloadImages() {
+            return Promise.all(images.map(src => new Promise(resolve => {
+                const img = new Image();
+                img.src = src;
+                img.onload = resolve; // Resolve when loaded
+                img.onerror = resolve; // Resolve even if failed
+            })));
+        }
+    
         function createSlides() {
             const slideshowContainer = document.getElementById("slideshow-container");
             slideshowContainer.innerHTML = ""; // Clear previous slides
+    
             images.forEach((imgSrc, index) => {
                 const slide = document.createElement("div");
                 slide.className = "slide";
                 
                 const img = document.createElement("img");
-                img.src = imgSrc;
+                img.dataset.src = imgSrc; // Lazy load (set later)
                 
                 const wish = document.createElement("p");
                 wish.innerText = wishes[index % wishes.length];
@@ -198,18 +207,25 @@
                 slideshowContainer.appendChild(slide);
             });
         }
-
+    
         function startSlideshow() {
             let slideIndex = 0;
             const slides = document.getElementsByClassName("slide");
-            slides[slideIndex].style.display = "flex";
+    
+            function showSlide(index) {
+                slides[index].style.display = "flex";
+                const img = slides[index].querySelector("img");
+                if (!img.src) img.src = img.dataset.src; // Assign source lazily
+            }
+    
+            showSlide(slideIndex);
             setInterval(() => {
                 slides[slideIndex].style.display = "none";
                 slideIndex = (slideIndex + 1) % slides.length;
-                slides[slideIndex].style.display = "flex";
-            }, 3000);
+                showSlide(slideIndex);
+            }, 5000); // 5 seconds per slide
         }
-
+    
         function generateConfetti() {
             const confettiContainer = document.createElement("div");
             confettiContainer.style.position = "fixed";  // Ensures confetti stays on screen
@@ -221,7 +237,7 @@
             confettiContainer.style.pointerEvents = "none";
             confettiContainer.style.zIndex = "9999";  // Ensures confetti is on top
             document.body.appendChild(confettiContainer);
-
+    
             function createConfettiPiece() {
                 const confetti = document.createElement("div");
                 confetti.className = "confetti";
@@ -233,27 +249,27 @@
                 confetti.style.left = `${Math.random() * 100}vw`;
                 confetti.style.opacity = Math.random();
                 confetti.style.borderRadius = "50%";
-
+    
                 // Random fall duration for each piece
                 const duration = 3 + Math.random() * 2;
                 confetti.style.animation = `fall ${duration}s linear forwards`;
-
+    
                 confettiContainer.appendChild(confetti);
-
+    
                 // Remove confetti after animation completes
                 setTimeout(() => {
                     confetti.remove();
                 }, duration * 1000);
             }
-
+    
             let confettiInterval = setInterval(createConfettiPiece, 200);  // Reduce confetti spawn rate
-
+    
             // Stop confetti after 15 seconds for performance reasons
             setTimeout(() => {
                 clearInterval(confettiInterval);
             }, 15000);
         }
-
     </script>
+    
 </body>
 </html>
