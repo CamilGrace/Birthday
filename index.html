@@ -6,44 +6,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <title>Happy Birthday, Tita Gina!</title>
     <style>
-        /* Base Styles */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #ffccff;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             text-align: center;
             flex-direction: column;
             overflow: hidden;
             position: relative;
-            padding: 10px;
         }
-
+        
         h1 {
             font-family: 'Pacifico', cursive;
-            font-size: 6vw; /* Scales with screen size */
-            color: #ff0066;
+            font-size: 62px;
         }
-
         p {
-            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: larger;
         }
-
         .container {
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 90%;
+            width: 60%;
             max-width: 600px;
         }
-
         .slideshow-container {
             position: relative;
-            width: 90%;
-            max-width: 600px;
+            width: 600px;
+            max-width: 90%;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -51,53 +46,53 @@
             display: none;
             text-align: center;
         }
-
         .slide {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-
         .slide img {
             width: 100%;
-            max-height: 40vh; /* Adjust height for mobile */
+            max-height: 350px;
             object-fit: contain;
             border-radius: 10px;
         }
-
         .btn {
             background-color: #ff66b2;
             border: none;
             color: white;
-            padding: 12px 20px;
-            font-size: 1.2rem;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
-            width: 80%;
-            max-width: 300px;
+            margin-top: 10px;
         }
-
         .btn:hover {
             background-color: #ff3385;
         }
-
+        /* Happy Birthday text */
         #happy-birthday {
             position: absolute;
             top: 10%;
             left: 50%;
             transform: translateX(-50%);
-            font-family: 'Pacifico', cursive;
-            font-size: 8vw;
+            font-family: cursive;
+            font-size: 3rem;
             font-weight: bold;
             color: #ff0066;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             display: none;
         }
-
         /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff0000;
+            opacity: 0.8;
+            border-radius: 50%;
+            animation: fall linear infinite;
+        }
         @keyframes fall {
             from {
                 transform: translateY(0);
@@ -106,43 +101,37 @@
                 transform: translateY(100vh);
             }
         }
-
-        @media (max-width: 600px) {
-            p {
-                font-size: 1rem;
-            }
-
-            h1 {
-                font-size: 8vw;
-            }
-
-            .btn {
-                font-size: 1rem;
-                padding: 10px;
-            }
-        }
     </style>
 </head>
 <body>
-
+    
     <div class="container" id="container">
         <h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>
-        <p>Wishing you a day filled with love, laughter, and joy! 💖✨</p>
-        <p>With love, <br> Camil Grace 🎈🎁🎊</p>
+        <p>Wishing you a day filled with love, laughter, and joy as wonderful as you are! 
+            <br> May this year bring you happiness, good health, and endless blessings. 
+            <br> You are truly special, and today is a celebration of your kindness, warmth, and beautiful heart.
+        <br> <br>Enjoy your special day, Tita Gina! You deserve all the best things in life! 💖✨</p>
+
+        <p>With love,
+        <br> Camil Grace 🎈🎁🎊</p>
+
         <button class="btn" id="startBtn">Click for a Surprise!</button>
     </div>
 
     <div class="slideshow-container" id="slideshow-container"></div>
     <div id="happy-birthday">🎉 Happy Birthday, Tita Gina! 🎉</div>
-
+    
     <script>
         document.getElementById("startBtn").addEventListener("click", () => {
-            document.getElementById("happy-birthday").style.display = "block";
-            document.getElementById("container").style.display = "none";
-            document.getElementById("slideshow-container").style.display = "block";
-            generateConfetti();
+            let happyBirthdayText = document.getElementById("happy-birthday");
+            happyBirthdayText.style.display = "block"; // Show the text
+
+            document.getElementById("container").style.display = "none"; // Hide main content
+            document.getElementById("slideshow-container").style.display = "block"; // Show slideshow
+            generateConfetti(); // Start confetti
+
             createSlides();
-            setTimeout(startSlideshow, 500);
+            setTimeout(startSlideshow, 500); // Start slideshow after slight delay
         });
 
         const images = [];
@@ -158,26 +147,26 @@
 
         const verses = [
             "Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.",
-            "Jeremiah 29:11 - 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you.'",
+            "Jeremiah 29:11 - 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'",
             "Numbers 6:24-26 - 'The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.'"
         ];
 
         function createSlides() {
             const slideshowContainer = document.getElementById("slideshow-container");
-            slideshowContainer.innerHTML = "";
+            slideshowContainer.innerHTML = ""; // Clear previous slides
             images.forEach((imgSrc, index) => {
                 const slide = document.createElement("div");
                 slide.className = "slide";
-
+                
                 const img = document.createElement("img");
                 img.src = imgSrc;
-
+                
                 const wish = document.createElement("p");
                 wish.innerText = wishes[index % wishes.length];
-
+                
                 const verse = document.createElement("p");
                 verse.innerText = verses[index % verses.length];
-
+                
                 slide.appendChild(img);
                 slide.appendChild(wish);
                 slide.appendChild(verse);
@@ -197,35 +186,46 @@
         }
 
         function generateConfetti() {
-            const confettiContainer = document.createElement("div");
-            confettiContainer.style.position = "fixed";
-            confettiContainer.style.top = "0";
-            confettiContainer.style.left = "0";
-            confettiContainer.style.width = "100vw";
-            confettiContainer.style.height = "100vh";
-            confettiContainer.style.pointerEvents = "none";
-            confettiContainer.style.overflow = "hidden";
-            confettiContainer.style.zIndex = "9999";
-            document.body.appendChild(confettiContainer);
+    const confettiContainer = document.createElement("div");
+    confettiContainer.style.position = "fixed"; // Stays on screen
+    confettiContainer.style.top = "0";
+    confettiContainer.style.left = "0";
+    confettiContainer.style.width = "100vw";
+    confettiContainer.style.height = "100vh";
+    confettiContainer.style.pointerEvents = "none";
+    confettiContainer.style.overflow = "hidden";
+    confettiContainer.style.zIndex = "9999"; // Ensure it's on top
+    document.body.appendChild(confettiContainer);
 
-            function createConfettiPiece() {
-                const confetti = document.createElement("div");
-                confetti.style.position = "absolute";
-                confetti.style.width = `${6 + Math.random() * 6}px`;
-                confetti.style.height = confetti.style.width;
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.top = "-10px";
-                confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.opacity = Math.random();
-                confetti.style.borderRadius = "50%";
-                confetti.style.animation = `fall ${3 + Math.random() * 3}s linear infinite`;
+    function createConfettiPiece() {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.position = "absolute";
+        confetti.style.width = `${8 + Math.random() * 6}px`; // Random size
+        confetti.style.height = confetti.style.width;
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.top = "-10px"; // Start above the screen
+        confetti.style.left = `${Math.random() * 100}vw`;
+        confetti.style.opacity = Math.random();
+        confetti.style.borderRadius = "50%";
 
-                confettiContainer.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 5000);
-            }
+        // Random fall duration and slight left-right sway
+        const duration = 3 + Math.random() * 3;
+        const angle = Math.random() > 0.5 ? 15 : -15;
+        confetti.style.animation = `fall ${duration}s linear infinite, sway ${duration}s ease-in-out infinite`;
 
-            setInterval(createConfettiPiece, 100);
-        }
+        confettiContainer.appendChild(confetti);
+
+        // Remove confetti after animation duration to keep the DOM clean
+        setTimeout(() => {
+            confetti.remove();
+        }, duration * 1000);
+    }
+
+    // Continuously create confetti without stopping
+    setInterval(createConfettiPiece, 100); // Adjust frequency if needed
+}
+
     </script>
 </body>
 </html>
