@@ -18,20 +18,22 @@
             overflow: hidden;
             position: relative;
         }
-        .container {
-        width: 90%;
-        max-width: 400px;
-        margin: auto;
-        text-align: center;
-    }
-
+        
         h1 {
-            font-family: 'Dancing Script', cursive;
+            font-family: 'Pacifico', cursive;
             font-size: 62px;
         }
         p {
             font-family: 'Poppins', sans-serif;
             font-size: larger;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 60%;
+            max-width: 600px;
         }
         .slideshow-container {
             position: relative;
@@ -42,14 +44,14 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
         }
         .slide {
             display: none;
         }
         img {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
+            height: auto;
             border-radius: 10px;
         }
         .confetti {
@@ -81,14 +83,6 @@
         .btn:hover {
             background-color: #ff3385;
         }
-        #happy-birthday {
-            font-family: cursive;
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff0066;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -102,8 +96,11 @@
         <p>With love,
         <br> Camil Grace 🎈🎁🎊</p>
 
-        <button id="surpriseBtn">Click for a Surprise!</button>
+        <button class="btn" id="startBtn">Click for a Surprise!</button>
     </div>
+
+    <div class="slideshow-container" id="slideshow-container"></div>
+    
     <script>
         const images = [];
         for (let i = 1; i <= 53; i++) {
@@ -145,7 +142,8 @@
         }
         
         function startSlideshow() {
-            document.getElementById("happy-birthday").style.display = "block";
+            document.getElementById("container").style.display = "none";
+            document.getElementById("slideshow-container").style.display = "block";
             generateConfetti();
             let slideIndex = 0;
             const slides = document.getElementsByClassName("slide");
@@ -158,26 +156,15 @@
         }
         
         function generateConfetti() {
-            const confettiContainer = document.createElement("div");
-            confettiContainer.style.position = "absolute";
-            confettiContainer.style.top = "0";
-            confettiContainer.style.left = "0";
-            confettiContainer.style.width = "100%";
-            confettiContainer.style.height = "100vh";
-            confettiContainer.style.overflow = "hidden";
-            confettiContainer.style.pointerEvents = "none";
-            document.body.appendChild(confettiContainer);
-            
-            function createConfettiPiece() {
+            setInterval(() => {
                 const confetti = document.createElement("div");
                 confetti.className = "confetti";
                 confetti.style.left = `${Math.random() * 100}%`;
                 confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
-                confettiContainer.appendChild(confetti);
+                document.body.appendChild(confetti);
                 setTimeout(() => confetti.remove(), 5000);
-            }
-            setInterval(createConfettiPiece, 200);
+            }, 200);
         }
         
         document.getElementById("startBtn").addEventListener("click", () => {
