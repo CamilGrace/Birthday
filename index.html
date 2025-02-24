@@ -38,17 +38,41 @@
         .slideshow-container {
             position: relative;
             max-width: 90%;
-            width: 500px;
-            height: 400px;
+            width: 600px; /* Adjusted for better content fit */
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: none;
+            text-align: center;
         }
+
+        .slideshow-container h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
         .slide {
             display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
+        .slide img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .slide p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
         img {
             width: 100%;
             height: auto;
@@ -143,29 +167,23 @@
         
         function startSlideshow() {
             document.getElementById("container").style.display = "none";
-            document.getElementById("slideshow-container").style.display = "block";
+
+            const slideshowContainer = document.getElementById("slideshow-container");
+            slideshowContainer.style.display = "block";
+            slideshowContainer.innerHTML = `<h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>` + slideshowContainer.innerHTML;
+
             generateConfetti();
             let slideIndex = 0;
             const slides = document.getElementsByClassName("slide");
-            slides[slideIndex].style.display = "block";
+            slides[slideIndex].style.display = "flex";
+            
             setInterval(() => {
                 slides[slideIndex].style.display = "none";
                 slideIndex = (slideIndex + 1) % slides.length;
-                slides[slideIndex].style.display = "block";
+                slides[slideIndex].style.display = "flex";
             }, 3000);
         }
-        
-        function generateConfetti() {
-            setInterval(() => {
-                const confetti = document.createElement("div");
-                confetti.className = "confetti";
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 5000);
-            }, 200);
-        }
+
         
         document.getElementById("startBtn").addEventListener("click", () => {
             createSlides();
