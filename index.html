@@ -104,6 +104,7 @@
     </style>
 </head>
 <body>
+    
     <div class="container" id="container">
         <h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>
         <p>Wishing you a day filled with love, laughter, and joy as wonderful as you are! 
@@ -118,13 +119,19 @@
     </div>
 
     <div class="slideshow-container" id="slideshow-container"></div>
+    <div id="happy-birthday">🎉 Happy Birthday, Tita Gina! 🎉</div>
     
     <script>
         document.getElementById("startBtn").addEventListener("click", () => {
             let happyBirthdayText = document.getElementById("happy-birthday");
             happyBirthdayText.style.display = "block"; // Show the text
+
+            document.getElementById("container").style.display = "none"; // Hide main content
+            document.getElementById("slideshow-container").style.display = "block"; // Show slideshow
+            generateConfetti(); // Start confetti
+
             createSlides();
-            setTimeout(startSlideshow, 500); // Ensure slides are loaded before starting
+            setTimeout(startSlideshow, 500); // Start slideshow after slight delay
         });
 
         const images = [];
@@ -168,9 +175,6 @@
         }
 
         function startSlideshow() {
-            document.getElementById("container").style.display = "none";
-            document.getElementById("slideshow-container").style.display = "block";
-            generateConfetti();
             let slideIndex = 0;
             const slides = document.getElementsByClassName("slide");
             slides[slideIndex].style.display = "flex";
