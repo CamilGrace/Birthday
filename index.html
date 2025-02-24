@@ -37,8 +37,8 @@
         }
         .slideshow-container {
             position: relative;
+            width: 600px;
             max-width: 90%;
-            width: 600px; /* Adjusted for better content fit */
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -46,38 +46,44 @@
             display: none;
             text-align: center;
         }
-
-        .slideshow-container h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
-
         .slide {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-
         .slide img {
             width: 100%;
             max-height: 350px;
             object-fit: contain;
             border-radius: 10px;
         }
-
-        .slide p {
-            font-family: 'Poppins', sans-serif;
-            font-size: 18px;
-            margin: 10px 0;
+        .btn {
+            background-color: #ff66b2;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
         }
-
-        img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
+        .btn:hover {
+            background-color: #ff3385;
         }
+        /* Happy Birthday text */
+        #happy-birthday {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: cursive;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff0066;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        /* Confetti */
         .confetti {
             position: absolute;
             width: 10px;
@@ -94,18 +100,6 @@
             to {
                 transform: translateY(100vh);
             }
-        }
-        .btn {
-            background-color: #ff66b2;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background-color: #ff3385;
         }
     </style>
 </head>
@@ -126,25 +120,33 @@
     <div class="slideshow-container" id="slideshow-container"></div>
     
     <script>
+        document.getElementById("startBtn").addEventListener("click", () => {
+            let happyBirthdayText = document.getElementById("happy-birthday");
+            happyBirthdayText.style.display = "block"; // Show the text
+            createSlides();
+            setTimeout(startSlideshow, 500); // Ensure slides are loaded before starting
+        });
+
         const images = [];
         for (let i = 1; i <= 53; i++) {
             images.push(`images/${i}.png`);
         }
-        
+
         const wishes = [
             "May your birthday be filled with joy and laughter!",
             "Wishing you good health and happiness!",
             "May God's blessings be with you always!"
         ];
-        
+
         const verses = [
             "Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.",
             "Jeremiah 29:11 - 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'",
             "Numbers 6:24-26 - 'The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.'"
         ];
-        
+
         function createSlides() {
             const slideshowContainer = document.getElementById("slideshow-container");
+            slideshowContainer.innerHTML = ""; // Clear previous slides
             images.forEach((imgSrc, index) => {
                 const slide = document.createElement("div");
                 slide.className = "slide";
@@ -164,19 +166,14 @@
                 slideshowContainer.appendChild(slide);
             });
         }
-        
+
         function startSlideshow() {
             document.getElementById("container").style.display = "none";
-
-            const slideshowContainer = document.getElementById("slideshow-container");
-            slideshowContainer.style.display = "block";
-            slideshowContainer.innerHTML = `<h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>` + slideshowContainer.innerHTML;
-
+            document.getElementById("slideshow-container").style.display = "block";
             generateConfetti();
             let slideIndex = 0;
             const slides = document.getElementsByClassName("slide");
             slides[slideIndex].style.display = "flex";
-            
             setInterval(() => {
                 slides[slideIndex].style.display = "none";
                 slideIndex = (slideIndex + 1) % slides.length;
@@ -184,11 +181,43 @@
             }, 3000);
         }
 
-        
-        document.getElementById("startBtn").addEventListener("click", () => {
-            createSlides();
-            startSlideshow();
-        });
+        function generateConfetti() {
+            const confettiContainer = document.createElement("div");
+            confettiContainer.style.position = "absolute";
+            confettiContainer.style.top = "0";
+            confettiContainer.style.left = "0";
+            confettiContainer.style.width = "100%";
+            confettiContainer.style.height = "100vh";
+            confettiContainer.style.overflow = "hidden";
+            confettiContainer.style.pointerEvents = "none";
+            document.body.appendChild(confettiContainer);
+
+            function createConfettiPiece() {
+                const confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.position = "absolute";
+                confetti.style.width = "6px";
+                confetti.style.height = "6px";
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.top = "0"; 
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.opacity = Math.random();
+                confetti.style.borderRadius = "50%";
+                confetti.style.animation = `fall ${3 + Math.random() * 2}s linear infinite`;
+
+                confettiContainer.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, 4000);
+            }
+
+            let confettiInterval = setInterval(createConfettiPiece, 200);
+
+            setTimeout(() => {
+                clearInterval(confettiInterval);
+            }, 15000);
+        }
     </script>
 </body>
 </html>
