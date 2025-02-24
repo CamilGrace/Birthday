@@ -123,7 +123,7 @@
         <br> <br>Enjoy your special day, Tita Gina! You deserve all the best things in life! 💖✨</p>
 
         <p>With love,
-        <br> Camil Grace 🎈🎁🎊</p>
+        <br> Emma and Camil 🎈🎁🎊</p>
         <button class="btn" id="startBtn">Click for a Surprise!</button>
     </div>
 
@@ -135,11 +135,17 @@
         <button class="nav-btn next" onclick="changeSlide(1)">&gt;</button>
     </div>
 
+    <audio id="background-music" loop>
+        <source src="happy_birthday_song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         document.getElementById("startBtn").addEventListener("click", () => {
             document.getElementById("container").style.display = "none";
             document.getElementById("slideshow-container").style.display = "block";
             document.getElementById("happy-birthday").style.display = "block";
+            document.getElementById("background-music").play();
             generateConfetti();
             showSlide(0);
         });
