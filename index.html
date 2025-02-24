@@ -14,28 +14,23 @@
             background-color: #ffccff;
             font-family: Arial, sans-serif;
             text-align: center;
-            overflow: hidden;
             flex-direction: column;
             position: relative;
+            overflow: hidden;
         }
         h1 {
             font-family: 'Dancing Script', cursive;
             font-size: 62px;
         }
-
         p {
             font-family: 'Poppins', sans-serif;
             font-size: larger;
         }
-
         .container {
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 1s ease-in-out;
-            position: relative;
-            z-index: 2;
             max-width: 90%;
         }
         button {
@@ -50,261 +45,57 @@
         button:hover {
             background-color: #ff3385;
         }
-        .grid-container {
-            display: grid;
-            gap: 5px;
+        .slideshow-container {
+            display: none;
             position: absolute;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            grid-template-columns: repeat(5, auto);
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 80%;
         }
-        #tita-grid {
-            top: 25%;
-        }
-        #gina-grid {
-            top: 60%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-        .picture {
-            width: 10vw;
-            height: 10vw;
-            max-width: 50px;
-            max-height: 50px;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        /* Happy Birthday text */
-        #happy-birthday {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: cursive;
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff0066;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        .slide {
             display: none;
         }
-        /* Confetti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #ff0000;
-            opacity: 0.8;
-            border-radius: 50%;
-            animation: fall linear infinite;
+        .active {
+            display: block;
         }
-        @keyframes fall {
-            from {
-                transform: translateY(0);
-            }
-            to {
-                transform: translateY(100vh);
-            }
-        }
-        
-        /* Responsive Design */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-        overflow-x: hidden;
-    }
-
-    .container {
-        width: 90%;
-        max-width: 400px;
-        margin: auto;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 8vw;
-        text-align: center;
-    }
-
-    p {
-        font-size: 4vw;
-    }
-
-    button {
-        font-size: 4.5vw;
-        padding: 8px 12px;
-    }
-
-    /* Grid Fix */
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); 
-        gap: 5px;
-        justify-content: center;
-    }
-
-    .picture {
-        width: 14vw;
-        height: 14vw;
-        max-width: 70px;
-        max-height: 70px;
-    }
-
-    /* Fixing text alignment */
-    #happy-birthday {
-        font-size: 6vw;
-        text-align: center;
-        position: relative;
-        top: 10px;
-        width: 100%;
-    }
-
-    /* Ensure TITA and GINA letters stay in place */
-    #tita-grid, #gina-grid {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
-}
-
     </style>
 </head>
 <body>
     <div class="container" id="container">
         <h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>
-        <p>Wishing you a day filled with love, laughter, and joy as wonderful as you are! 
-            <br> May this year bring you happiness, good health, and endless blessings. 
-            <br> You are truly special, and today is a celebration of your kindness, warmth, and beautiful heart.
-        <br> <br>Enjoy your special day, Tita Gina! You deserve all the best things in life! 💖✨</p>
-
-        <p>With love,
-        <br> Camil Grace 🎈🎁🎊</p>
-
+        <p>Wishing you a day filled with love, laughter, and joy as wonderful as you are!<br>
+           May this year bring you happiness, good health, and endless blessings.</p>
+        <p>With love,<br> Camil Grace 🎈🎁🎊</p>
         <button id="surpriseBtn">Click for a Surprise!</button>
     </div>
 
-    <div id="tita-grid" class="grid-container"></div>
-    <div id="gina-grid" class="grid-container"></div>
-
-    <h1 id="happy-birthday">🎉 Happy Birthday, Tita Gina! 🎂</h1>
+    <div class="slideshow-container" id="slideshow">
+        <div class="slide active">❤️ "Happy Birthday, Tita Gina! May your day be filled with joy and laughter!" 🎉</div>
+        <div class="slide">📖 "The Lord bless you and keep you; the Lord make His face shine on you and be gracious to you." - Numbers 6:24-25</div>
+        <div class="slide">🎂 "You are loved and cherished. Wishing you a fantastic birthday!"</div>
+        <div class="slide">🙏 "This is the day the Lord has made; let us rejoice and be glad in it." - Psalm 118:24</div>
+    </div>
 
     <script>
         document.getElementById("surpriseBtn").addEventListener("click", function() {
-            let container = document.getElementById("container");
-            let titaGrid = document.getElementById("tita-grid");
-            let ginaGrid = document.getElementById("gina-grid");
-            let happyBirthdayText = document.getElementById("happy-birthday");
-
-            const images = [];
-            for (let i = 1; i <= 53; i++) {
-                images.push(`images/${i}.png`);
+            document.getElementById("container").style.display = "none";
+            document.getElementById("slideshow").style.display = "block";
+            let slides = document.querySelectorAll(".slide");
+            let index = 0;
+            function showSlide() {
+                slides.forEach(slide => slide.classList.remove("active"));
+                slides[index].classList.add("active");
+                index = (index + 1) % slides.length;
+                setTimeout(showSlide, 3000);
             }
-
-            // Separate grids for "TITA" and "GINA"
-            const grids = {
-                TITA: [
-                    "11111 11111 11111   1  ",
-                    "  1     1     1    1 1 ",
-                    "  1     1     1   11111",
-                    "  1     1     1   1   1",
-                    "  1   11111   1   1   1"
-                ],
-                GINA: [
-                    "11111 11111 1   1   1  ",
-                    "1       1   11  1  1 1 ",
-                    "1  11   1   1 1 1 11111",
-                    "1   1   1   1  11 1   1",
-                    "11111 11111 1   1 1   1"
-                ]
-            };
-            function displayGrid(grid, container) {
-                container.innerHTML = "";
-                container.style.display = "grid";
-                container.style.gridTemplateColumns = `repeat(${grid[0].length}, auto)`;
-
-                let imgIndex = 0;
-                for (let row = 0; row < grid.length; row++) {
-                    for (let col = 0; col < grid[row].length; col++) {
-                        const cellValue = grid[row][col];
-
-                        if (cellValue === " ") {
-                            const emptyDiv = document.createElement("div");
-                            emptyDiv.style.width = "20px";
-                            container.appendChild(emptyDiv);
-                            continue;
-                        }
-
-                        const img = document.createElement("img");
-                        img.src = images[imgIndex % images.length];
-                        img.className = "picture";
-                        container.appendChild(img);
-
-                        if (cellValue === "1") {
-                            setTimeout(() => {
-                                img.style.opacity = "1";
-                            }, (row * grid[row].length + col) * 10);
-                            imgIndex++;
-                        } else {
-                            img.style.display = "none";
-                        }
-                    }
-                }
-            }
-
-            container.style.transform = "scale(0)";
-            setTimeout(() => {
-                displayGrid(grids.TITA, titaGrid);
-                setTimeout(() => {
-                    displayGrid(grids.GINA, ginaGrid);
-                    ginaGrid.style.opacity = "1";
-
-                    setTimeout(() => {
-                        happyBirthdayText.style.display = "block";
-                        generateConfetti();
-                    }, 500);
-                }, 500);
-            }, 500);
+            showSlide();
         });
-
-        function generateConfetti() {
-            const confettiContainer = document.createElement("div");
-            confettiContainer.style.position = "absolute";
-            confettiContainer.style.top = "0";
-            confettiContainer.style.left = "0";
-            confettiContainer.style.width = "100%";
-            confettiContainer.style.height = "100vh";
-            confettiContainer.style.overflow = "hidden";
-            confettiContainer.style.pointerEvents = "none";
-            document.body.appendChild(confettiContainer);
-
-            function createConfettiPiece() {
-                const confetti = document.createElement("div");
-                confetti.style.position = "absolute";
-                confetti.style.width = "6px";  // Smaller confetti for mobile
-                confetti.style.height = "6px";
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.top = "0"; 
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.opacity = Math.random();
-                confetti.style.borderRadius = "50%";
-                confetti.style.animation = `fall ${3 + Math.random() * 2}s linear infinite`;
-
-                confettiContainer.appendChild(confetti);
-
-                setTimeout(() => {
-                    confetti.remove(); // Remove after falling
-                }, 4000); // Reduce time for smoother performance
-            }
-
-            let confettiInterval = setInterval(createConfettiPiece, 200);  // Reduce confetti spawn rate
-
-            // Stop confetti after 15 seconds for performance reasons
-            setTimeout(() => {
-                clearInterval(confettiInterval);
-            }, 15000);
-        }
-
     </script>
 </body>
 </html>
