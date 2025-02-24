@@ -109,20 +109,32 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: repeat(auto-fit, minmax(20px, 1fr)); 
+            .container {
+                padding: 15px;
+                width: 95%;
             }
-            .picture {
-                width: 8vw; 
-                height: 8vw;
-                max-width: 35px;  
-                max-height: 35px;
+
+            h1 {
+                font-size: 8vw;
             }
+
+            p {
+                font-size: 4vw;
+            }
+
             button {
-                font-size: 14px;
-                padding: 8px 15px;
+                font-size: 5vw;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .picture {
+                max-width: 80px;
             }
         }
+
 
     </style>
 </head>
