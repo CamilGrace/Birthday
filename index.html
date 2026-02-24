@@ -109,25 +109,80 @@
         .btn-hug { border-color: var(--blue); color: var(--blue); margin-top: 5px; }
         .btn-hug:hover { background: var(--blue); color: white; }
         
-        /* --- NEW: LETTER CARD STYLES --- */
+        /* --- UPDATED RESPONSIVE LETTER CARD STYLES --- */
         #letter-screen { 
-            display: none; flex-direction: column; align-items: center; 
-            z-index: 30; animation: fadeIn 1.2s ease;
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; /* Centers the envelope vertically on mobile */
+            z-index: 30; 
+            animation: fadeIn 1.2s ease;
+            padding: 10px;
+            height: 100vh; /* Ensures it takes up the full screen height */
         }
+
         .envelope-wrapper {
-            width: 90vw; max-width: 500px; aspect-ratio: 1/1;
+            position: relative;
+            width: 95vw; /* Fills most of the screen width on mobile */
+            max-width: 500px; /* Limits size on desktop */
+            aspect-ratio: 1/1;
             background: url('envelope-card.png') no-repeat center;
             background-size: contain;
-            display: flex; justify-content: center; align-items: center;
-            position: relative;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
         }
+
         .letter-content {
-            width: 65%; height: 55%; 
-            text-align: center; color: #444; overflow-y: auto;
-            padding: 10px; font-size: 0.95rem; line-height: 1.5;
+            /* These percentages keep the text inside the 'white card' 
+            regardless of how big the envelope image is */
+            width: 70%; 
+            height: 45%; 
+            text-align: center; 
+            color: #444; 
+            overflow-y: auto;
+            padding: 5px; 
+            
+            /* clamp(minimum, preferred, maximum) */
+            font-size: clamp(12px, 3.2vw, 17px); 
+            line-height: 1.4;
+            
+            /* This moves the text up into the card area of your image */
+            /* You may need to tweak -10% to -15% based on your image */
+            margin-top: -12%; 
         }
+
+        /* Hide scrollbar for a cleaner look */
         .letter-content::-webkit-scrollbar { display: none; } 
 
+        .btn-open {
+            background: white;
+            border: 2px solid var(--pink);
+            color: var(--pink);
+            padding: clamp(10px, 2vw, 15px) clamp(20px, 5vw, 40px);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            transition: 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(255, 107, 173, 0.3);
+        }
+
+        .btn-open:hover {
+            background: var(--pink);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Specific fix for very small phones */
+        @media (max-width: 380px) {
+            .letter-content {
+                width: 80%;
+                height: 48%;
+                margin-top: -15%;
+            }
+        }
         .reaction-bar { display: flex; gap: 10px; margin-top: 10px; }
         .react-btn {
             background: white; border: none; border-radius: 50%; width: 42px; height: 42px;
@@ -162,7 +217,7 @@
                 <p style="text-align:center; font-weight:bold; color:var(--pink);">Emma & Camil ❤️</p>
             </div>
         </div>
-        <button class="btn" style="margin-top:20px;" onclick="startSlideshow()">Open Your Memories ✨</button>
+        <button class="btn-open" onclick="startSlideshow()">Open Your Memories ✨</button>
     </div>
 
     <!-- 3. SLIDESHOW -->
