@@ -3,331 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <title>Happy Birthday, Tita Gina!</title>
+    <title>Happy Birthday Tita Gina!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&family=Dancing+Script:wght@700&family=Caveat:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #ffccff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            flex-direction: column;
+        :root {
+            --pink: #ff6bad;
+            --blue: #00b4d8;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Quicksand', sans-serif;
             overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* --- SCREEN 1: THE GIFT --- */
+        #intro-screen { text-align: center; z-index: 10; }
+        .header-img { max-width: 80%; height: auto; margin-bottom: 20px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
+        .gift-box { width: 180px; cursor: pointer; animation: bounce 2s infinite ease-in-out; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* --- SCREEN 2: THE SLIDESHOW --- */
+        #main-content {
+            display: none; flex-direction: column; align-items: center;
+            width: 95%; max-width: 500px; animation: fadeIn 1s ease;
+        }
+        .polaroid-container {
             position: relative;
-            padding: 20px;
+            width: 320px; height: 380px; 
+            margin-bottom: 20px;
         }
-        
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: clamp(36px, 6vw, 62px);
+        .user-photo {
+            position: absolute;
+            top: 7%; left: 7%; width: 86%; height: 72%; 
+            object-fit: cover; z-index: 1;
         }
-        p {
-            font-family: 'Poppins', sans-serif;
-            font-size: clamp(14px, 2vw, 18px);
+        .frame-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px);
+            padding: 15px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%;
         }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 600px;
+
+        /* --- SCREEN 3: STITCH --- */
+        #stitch-screen {
+            display: none; flex-direction: column; align-items: center;
+            text-align: center; width: 90%; animation: fadeIn 1.5s ease;
+            overflow-y: auto; max-height: 95vh;
         }
-        .slideshow-container {
+        .speech-bubble {
+            position: relative; background: #e1f5fe; border-radius: 15px;
+            padding: 20px; margin: 15px 0; border: 2px solid #b3e5fc;
+            font-weight: 600; color: #0277bd; line-height: 1.4;
+        }
+        #stitch-screen img {
+            width: 70%;       /* Takes up 70% of the screen width */
+            max-width: 300px; /* But never gets bigger than 300px on a laptop */
+            height: auto;
+            animation: floatStitch 3s ease-in-out infinite;
+        }
+
+        @keyframes floatStitch {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* --- NEW: SCRATCH CARD STYLES --- */
+        .scratch-container {
             position: relative;
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            display: none;
+            width: 280px; height: 120px;
+            margin: 15px auto;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 3px solid var(--pink);
         }
-        .slide img {
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            border-radius: 10px;
+        .scratch-hidden-content {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: #fff5f8;
+            color: var(--pink); text-align: center;
         }
+        #scratch-canvas {
+            position: absolute; top: 0; left: 0;
+            cursor: crosshair; touch-action: none;
+        }
+
+        /* --- BUTTONS & UI --- */
+        .nav-buttons { margin-top: 15px; display: flex; gap: 15px; }
         .btn {
-            background-color: #ff66b2;
-            border: none;
-            color: white;
-            padding: 12px 20px;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 5px;
-            transition: 0.3s;
+            background: white; border: 2px solid var(--pink); color: var(--pink);
+            padding: 10px 20px; border-radius: 25px; cursor: pointer;
+            font-weight: bold; transition: 0.3s;
         }
-        .btn:hover {
-            background-color: #ff3385;
+        .btn:hover { background: var(--pink); color: white; transform: scale(1.05); }
+        .btn-hug { border-color: var(--blue); color: var(--blue); margin-top: 5px; }
+        .btn-hug:hover { background: var(--blue); color: white; }
+        
+        /* --- NEW: LETTER CARD STYLES --- */
+        #letter-screen { 
+            display: none; flex-direction: column; align-items: center; 
+            z-index: 30; animation: fadeIn 1.2s ease;
         }
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2rem;
-            cursor: pointer;
-            background: #ff3385;
-            border: none;
-            color: white;
-            font-weight: bold;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        .envelope-wrapper {
+            width: 90vw; max-width: 500px; aspect-ratio: 1/1;
+            background: url('envelope-card.png') no-repeat center;
+            background-size: contain;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
         }
-        .nav-btn:hover {
-            background: #ff66b2;
+        .letter-content {
+            width: 65%; height: 55%; 
+            text-align: center; color: #444; overflow-y: auto;
+            padding: 10px; font-size: 0.95rem; line-height: 1.5;
         }
-        .prev {
-            left: 10px;
-        }
-        .next {
-            right: 10px;
-        }
-        #happy-birthday {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Pacifico', cursive;
-            font-size: clamp(24px, 5vw, 40px);
-            color: #ff0066;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            display: none;
-        }
-        /* Confetti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            opacity: 0.8;
-            border-radius: 50%;
-            animation: fall linear infinite;
-        }
+        .letter-content::-webkit-scrollbar { display: none; } 
 
-        @keyframes fall {
-            from {
-                transform: translateY(0);
-            }
-            to {
-                transform: translateY(100vh);
-            }
+        .reaction-bar { display: flex; gap: 10px; margin-top: 10px; }
+        .react-btn {
+            background: white; border: none; border-radius: 50%; width: 42px; height: 42px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5rem;
-            }
+        .react-btn:hover { transform: scale(1.2); }
 
-            .nav-button {
-                padding: 8px;
-                font-size: 14px;
-            }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-    <div class="container" id="container">
-        <h1>🎂 Happy Birthday, Tita Gina! 🎉</h1>
-        <p>May this year bring you happiness, good health, and endless blessings. 
-            <br> You are truly special, and today is a celebration of your kindness, warmth, and beautiful heart.
 
-        <p>With love,
-        <br> Emma and Camil 🎈🎁🎊</p>
-        <button class="btn" id="startBtn">Click for a Surprise!</button>
+    <audio id="bgMusic" loop><source src="happy_birthday_song.mp3" type="audio/mpeg"></audio>
+
+    <!-- 1. INTRO -->
+    <div id="intro-screen">
+        <img src="header.png" alt="Header" class="header-img"><br>
+        <img src="gift-box.png" alt="Gift" class="gift-box" onclick="openLetter()">
+        <p style="color:var(--pink); font-weight:bold;">A special delivery for you! <br> Tap the gift box...</p>
     </div>
 
-    <div id="happy-birthday">🎉 Happy Birthday! 🎉</div>
-
-    <div class="slideshow-container" id="slideshow-container">
-        <button class="nav-btn prev" onclick="changeSlide(-1)">&lt;</button>
-        <div class="slide" id="slide"></div>
-        <button class="nav-btn next" onclick="changeSlide(1)">&gt;</button>
+    <!-- 2. THE LETTER CARD -->
+    <div id="letter-screen">
+        <div class="envelope-wrapper">
+            <div class="letter-content">
+                <h3 style="font-family:'Pacifico'; color:var(--pink); margin-top:0;">Dearest Tita Gina,</h3>
+                <p>
+                    On your special day, we wanted to take a moment to tell you how much you mean to us. 
+                    You are a light in our family and a constant blessing from God. 
+                </p>
+                <p style="text-align:center; font-weight:bold; color:var(--pink);">Emma & Camil ❤️</p>
+            </div>
+        </div>
+        <button class="btn" style="margin-top:20px;" onclick="startSlideshow()">Open Your Memories ✨</button>
     </div>
 
-    <audio id="background-music" loop>
-        <source src="happy_birthday_song.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <!-- 3. SLIDESHOW -->
+    <div id="main-content">
+        <div class="polaroid-container">
+            <img id="display-img" src="" class="user-photo">
+            <img src="polaroid-frame.png" class="frame-overlay">
+        </div>
+        <div class="message-box">
+            <p id="display-wish" style="font-weight:600; margin:0; color:#333;"></p>
+            <p id="display-verse" style="font-size:0.85rem; color:var(--pink); font-style:italic; margin-top:8px;"></p>
+        </div>
+        
+        <div class="reaction-bar">
+            <button class="react-btn" onclick="shootEmoji('💖')">💖</button>
+            <button class="react-btn" onclick="shootEmoji('🙏')">🙏</button>
+            <button class="react-btn" onclick="shootEmoji('✨')">✨</button>
+            <button class="react-btn" onclick="shootEmoji('🎂')">🎂</button>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn" onclick="changeSlide(-1)">Back</button>
+            <button class="btn" id="next-btn" onclick="changeSlide(1)">Next ✨</button>
+        </div>
+        <p id="progress" style="margin-top:10px; font-size:0.8rem; color:#666;"></p>
+    </div>
+
+    <!-- 4. STITCH SCREEN -->
+    <div id="stitch-screen">
+        <img src="stitch.png" alt="Stitch">
+        <div class="speech-bubble">
+            "Aloha, Tita Gina! Ohana means family... we have one last surprise for you below!"
+        </div>
+        
+        <!-- THE SCRATCH CARD -->
+        <div class="scratch-container">
+            <div class="scratch-hidden-content">
+                <p style="margin:0; font-size: 0.7rem; color: #777; letter-spacing: 1px;">OUR WISH FOR YOU:</p>
+                <h3 style="margin:8px 0; font-family:'Dancing Script', cursive; color: var(--pink); font-size: 1.6rem; line-height: 1.2;">
+                    May this year be your luckiest and happiest one yet!
+                </h3>
+                <p style="margin:0; font-weight: 600; color: var(--blue); font-size: 0.8rem;">We love you, Tita Gina! ❤️</p>
+            </div>
+            <canvas id="scratch-canvas" width="280" height="120"></canvas>
+        </div>
+
+        <button class="btn btn-hug" onclick="sendHug()">Send us a Virtual Hug! 🤗</button>
+        <button class="btn" onclick="location.reload()" style="margin-top:10px; border:none; font-size:0.7rem; color:#777;">Watch Again 🔄</button>
+    </div>
 
     <script>
-        document.getElementById("startBtn").addEventListener("click", () => {
-            document.getElementById("container").style.display = "none";
-            document.getElementById("slideshow-container").style.display = "block";
-            document.getElementById("happy-birthday").style.display = "block";
-            document.getElementById("background-music").play();
-            generateConfetti();
-            showSlide(0);
-        });
+        let wishes = ["May your day be as bright as your smile, Tita Gina!", "Wishing you a year of overflowing blessings and joy!", "You're not just getting older, you're getting better and more loved!", "May your heart be light and your spirit be bright today!", "Sending you 45 cheers for 45 photos of wonderful memories!", "To our favorite Tita: May your day be filled with peace.", "Wishing you health that blooms like a garden in spring!", "May your laughter echo through the halls of your home today!", "You are a gift to everyone who knows you. Happy Birthday!", "May every candle you blow out today be a prayer answered.", "To a woman of grace, strength, and beauty—Happy Birthday!", "May your coffee be strong and your birthday be long!", "Sending you a huge hug through the screen, Tita Gina!", "May your day be filled with the things that make you happiest.", "You deserve all the cake and all the love today!", "Wishing you a year of new adventures and beautiful moments.", "May God’s favor follow you in everything you do this year.", "To the woman who keeps our family together—we love you!", "Happy Birthday! May your day be sprinkled with gold sparkles.", "You bring so much warmth to our lives. Enjoy your special day!", "May your birthday be the start of your best year yet!", "Cheers to another year of being fabulous and kind!", "May you be surrounded by family, friends, and lots of love.", "Wishing you a day of relaxation and pure happiness.", "May your faith grow even stronger in this new year of life.", "You are a blessing to Emma and Camil every single day!", "Happy Birthday! We are so lucky to have you in our lives.", "May your heart always find reasons to sing with joy.", "Wishing you a celebration as beautiful as your soul.", "May the Lord bless you and keep you today and forever.", "To more travels, more laughter, and more cake—Happy Birthday!", "May your birthday be filled with sweet surprises.", "You make the world a better place just by being in it.", "Wishing you a lifetime of love and good health.", "May your special day be wrapped in God's perfect peace.", "Sending you sunshine and flowers on your birthday!", "You are loved more than words can ever express.", "May this day bring you as much happiness as you give others.", "Happy Birthday to a truly wonderful and inspiring woman!", "May your journey ahead be paved with joy and grace.", "Wishing you a birthday that is simply unforgettable.", "May you always walk in the light of God's love.", "You are a treasure to our family. Have the best day!", "May your birthday be the beginning of a beautiful chapter.", "We love you to the moon and back, Tita Gina!"];
+        let verses = ["Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.", "Numbers 6:24 - The Lord bless you and keep you.", "Psalm 20:4 - May He give you the desire of your heart and make all your plans succeed.", "Proverbs 9:11 - For through wisdom your days will be many, and years will be added to your life.", "Zephaniah 3:17 - The Lord your God is with you, the Mighty Warrior who saves.", "Psalm 37:4 - Take delight in the Lord, and He will give you the desires of your heart.", "Jeremiah 29:11 - 'For I know the plans I have for you,' declares the Lord.", "3 John 1:2 - I pray that you may enjoy good health and that all may go well with you.", "Psalm 91:16 - With long life I will satisfy him and show him my salvation.", "Isaiah 40:31 - But those who hope in the Lord will renew their strength.", "Psalm 16:11 - You make known to me the path of life; you will fill me with joy in your presence.", "Proverbs 3:5-6 - Trust in the Lord with all your heart and lean not on your own understanding.", "Lamentations 3:22-23 - Because of the Lord’s great love we are not consumed, for his mercies never fail.", "Romans 15:13 - May the God of hope fill you with all joy and peace as you trust in Him.", "Psalm 23:1 - The Lord is my shepherd, I lack nothing.", "Matthew 5:16 - Let your light shine before others, that they may see your good deeds.", "Ephesians 2:10 - For we are God’s handiwork, created in Christ Jesus to do good works.", "Psalm 103:1 - Praise the Lord, my soul; all my inmost being, praise his holy name.", "Philippians 4:13 - I can do all this through him who gives me strength.", "1 Corinthians 16:14 - Do everything in love.", "Psalm 107:1 - Give thanks to the Lord, for he is good; his love endures forever.", "Proverbs 31:25 - She is clothed with strength and dignity; she can laugh at the days to come.", "Isaiah 43:1 - Do not fear, for I have redeemed you; I have summoned you by name; you are mine.", "Psalm 46:10 - Be still, and know that I am God.", "2 Corinthians 9:8 - And God is able to bless you abundantly.", "Psalm 119:105 - Your word is a lamp for my feet, a light on my path.", "Colossians 3:15 - Let the peace of Christ rule in your hearts.", "1 Thessalonians 5:16-18 - Rejoice always, pray continually, give thanks in all circumstances.", "Psalm 121:7 - The Lord will keep you from all harm—he will watch over your life.", "James 1:17 - Every good and perfect gift is from above.", "Joshua 1:9 - Be strong and courageous. Do not be afraid; do not be discouraged.", "Psalm 139:14 - I praise you because I am fearfully and wonderfully made.", "Proverbs 16:3 - Commit to the Lord whatever you do, and he will establish your plans.", "Isaiah 26:3 - You will keep in perfect peace those whose minds are steadfast.", "Matthew 11:28 - Come to me, all you who are weary and burdened, and I will give you rest.", "Psalm 34:8 - Taste and see that the Lord is good; blessed is the one who takes refuge in him.", "Hebrews 11:1 - Now faith is confidence in what we hope for and assurance about what we do not see.", "Proverbs 4:23 - Above all else, guard your heart, for everything you do flows from it.", "Romans 8:28 - And we know that in all things God works for the good of those who love him.", "Psalm 62:1 - Truly my soul finds rest in God; my salvation comes from him.", "Philippians 4:7 - And the peace of God, which transcends all understanding, will guard your hearts.", "Exodus 14:14 - The Lord will fight for you; you need only to be still.", "Psalm 145:9 - The Lord is good to all; he has compassion on all he has made.", "1 Peter 5:7 - Cast all your anxiety on him because he cares for you.", "Micah 6:8 - And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God."];
 
-        const images = ["1.png", "2.png", "3.png",
-                        "4.png", "5.png", "6.png",
-                        "7.png", "8.png", "9.png",
-                        "10.png", "11.png", "12.png",
-                        "13.png", "14.png", "15.png",
-                        "16.png", "17.png", "18.png",
-                        "19.png", "20.png", "21.png",
-                        "22.png", "23.png", "24.png",
-                        "25.png", "26.png", "27.png",
-                        "28.png", "29.png", "30.png",
-                        "31.png", "32.png", "33.png",
-                        "34.png", "35.png", "36.png",
-                        "37.png", "38.png", "39.png",
-                        "40.png", "41.png", "42.png",
-                        "43.png", "44.png", "45.png"
-        ];
-        const wishes = [
-            "May your birthday be filled with joy and laughter!",
-            "Wishing you good health and happiness!",
-            "May God's blessings be with you always!",
-            "May your heart be filled with peace, love, and laughter today and always!",
-            "On your special day, may happiness wrap you like a warm embrace!",
-            "Wishing you endless joy, good health, and wonderful moments in the year ahead!",
-            "May your life be filled with love and cherished memories today and always!",
-            "Another year, another blessing! May God’s love shine upon you!",
-            "May today be the start of a year filled with new blessings and happy memories!",
-            "You are loved and appreciated more than words can say. Enjoy your special day!",
-            "May this birthday bring you closer to all your heart’s desires!",
-            "Every day is a blessing, but today is extra special because it’s your birthday!",
-            "May your heart always be filled with the peace and joy that comes from God’s love!",
-            "Wishing you a life filled with faith, hope, and love!",
-            "May your birthday be as beautiful and bright as your soul!",
-            "May this year bring you closer to your dreams and fill your heart with gratitude!",
-            "Wishing you a birthday filled with love, laughter, and the presence of those who matter most!",
-            "May the Lord continue to guide your path and bless you abundantly!",
-            "A birthday is a reminder of how loved and cherished you are—have a wonderful one!",
-            "May your special day be a reflection of all the kindness you bring into the world!",
-            "Sending prayers of joy, success, and peace for the year ahead!",
-            "Another year, another opportunity to shine! Wishing you a birthday full of God’s grace!",
-            "May the Lord bless you with strength, wisdom, and prosperity in the coming year!",
-            "Wishing you a birthday filled with love, laughter, and answered prayers!",
-            "May every moment of today be wrapped in the love of family and friends!",
-            "May this new year of life bring you closer to all your heart's desires!",
-            "Wishing you happiness today and always—may your faith continue to grow strong!",
-            "May your birthday be a testimony of God's goodness and favor upon your life!",
-            "Praying that this new year of your life is filled with new opportunities and blessings!",
-            "Wishing you health, happiness, and a future filled with God’s grace!",
-            "May your faith continue to guide you toward a bright and fulfilling future!",
-            "May this day be the beginning of another amazing chapter in your life!",
-            "Wishing you a joyful heart and a life filled with God's presence!",
-            "Happy birthday! May your journey ahead be paved with peace, love, and joy!",
-            "May God grant you wisdom and strength to conquer all that comes your way!",
-            "Wishing you a day filled with warmth, love, and God's endless blessings!",
-            "May your heart be filled with gratitude as you celebrate another year of life!",
-            "Your life is a gift to the world—keep shining and inspiring others!",
-            "May you continue to walk in faith and receive God's abundant blessings!",
-            "Wishing you a birthday as wonderful as the love you spread to others!",
-            "May God’s peace and favor be upon you today and always!",
-            "Happy birthday! May you always walk in God’s light and love!",
-            "May every step you take this year be guided by God’s wisdom and grace!",
-            "May the love of Christ shine upon you on your special day!",
-            "Happy birthday! May your life be filled with purpose and endless blessings!"
-        ];
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        shuffleArray(wishes); shuffleArray(verses);
 
-        const verses = [
-            "Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.",
-            "Jeremiah 29:11 - 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'",
-            "Numbers 6:24-26 - 'The Lord bless you and keep you; the Lord make His face shine on you and be gracious to you.'",
-            "Proverbs 9:11 - 'For through wisdom your days will be many, and years will be added to your life.'",
-            "Psalm 20:4 - 'May He give you the desire of your heart and make all your plans succeed.'",
-            "Psalm 37:4 - 'Delight yourself in the Lord, and He will give you the desires of your heart.'",
-            "James 1:17 - 'Every good and perfect gift is from above, coming down from the Father of the heavenly lights.'",
-            "Isaiah 40:31 - 'But those who hope in the Lord will renew their strength; they will soar on wings like eagles.'",
-            "Romans 15:13 - 'May the God of hope fill you with all joy and peace as you trust in Him.'",
-            "3 John 1:2 - 'Dear friend, I pray that you may enjoy good health and that all may go well with you.'",
-            "Psalm 90:12 - 'Teach us to number our days, that we may gain a heart of wisdom.'",
-            "Lamentations 3:22-23 - 'The steadfast love of the Lord never ceases; His mercies never come to an end; they are new every morning.'",
-            "Colossians 3:15 - 'Let the peace of Christ rule in your hearts, since as members of one body you were called to peace.'",
-            "Matthew 5:16 - 'Let your light shine before others, that they may see your good deeds and glorify your Father in heaven.'",
-            "Psalm 91:16 - 'With long life I will satisfy him and show him my salvation.'",
-            "Proverbs 16:3 - 'Commit to the Lord whatever you do, and He will establish your plans.'",
-            "Psalm 46:10 - 'Be still, and know that I am God.'",
-            "Ephesians 2:10 - 'For we are God’s handiwork, created in Christ Jesus to do good works.'",
-            "Philippians 4:6-7 - 'Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.'",
-            "Isaiah 26:3 - 'You will keep in perfect peace those whose minds are steadfast because they trust in You.'",
-            "2 Corinthians 9:8 - 'And God is able to bless you abundantly, so that in all things at all times, having all that you need, you will abound in every good work.'",
-            "Romans 8:28 - 'And we know that in all things God works for the good of those who love Him.'",
-            "Psalm 34:8 - 'Taste and see that the Lord is good; blessed is the one who takes refuge in Him.'",
-            "Matthew 6:33 - 'But seek first His kingdom and His righteousness, and all these things will be given to you as well.'",
-            "Proverbs 3:5-6 - 'Trust in the Lord with all your heart and lean not on your own understanding.'",
-            "Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.",
-            "Jeremiah 29:11 - 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'",
-            "Numbers 6:24-26 - 'The Lord bless you and keep you; the Lord make His face shine on you and be gracious to you.'",
-            "Proverbs 9:11 - 'For through wisdom your days will be many, and years will be added to your life.'",
-            "Psalm 20:4 - 'May He give you the desire of your heart and make all your plans succeed.'",
-            "Psalm 37:4 - 'Delight yourself in the Lord, and He will give you the desires of your heart.'",
-            "James 1:17 - 'Every good and perfect gift is from above, coming down from the Father of the heavenly lights.'",
-            "Isaiah 40:31 - 'But those who hope in the Lord will renew their strength; they will soar on wings like eagles.'",
-            "Romans 15:13 - 'May the God of hope fill you with all joy and peace as you trust in Him.'",
-            "3 John 1:2 - 'Dear friend, I pray that you may enjoy good health and that all may go well with you.'",
-            "Psalm 90:12 - 'Teach us to number our days, that we may gain a heart of wisdom.'",
-            "Lamentations 3:22-23 - 'The steadfast love of the Lord never ceases; His mercies never come to an end; they are new every morning.'",
-            "Colossians 3:15 - 'Let the peace of Christ rule in your hearts, since as members of one body you were called to peace.'",
-            "Matthew 5:16 - 'Let your light shine before others, that they may see your good deeds and glorify your Father in heaven.'",
-            "Psalm 91:16 - 'With long life I will satisfy him and show him my salvation.'",
-            "Proverbs 16:3 - 'Commit to the Lord whatever you do, and He will establish your plans.'",
-            "Psalm 46:10 - 'Be still, and know that I am God.'",
-            "Ephesians 2:10 - 'For we are God’s handiwork, created in Christ Jesus to do good works.'",
-            "Philippians 4:6-7 - 'Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.'",
-            "Isaiah 26:3 - 'You will keep in perfect peace those whose minds are steadfast because they trust in You.'"
-        ];
+        let currentIndex = 0;
 
-
-        let slideIndex = 0;
-
-        function showSlide(index) {
-            slideIndex = index;
-            const slide = document.getElementById("slide");
-            slide.innerHTML = `
-                <img src="images/${images[index]}" alt="Slide">
-                <p>${wishes[index]}</p>
-                <p>${verses[index]}</p>
-            `;
+        function openLetter() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('letter-screen').style.display = 'flex';
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.4; music.play();
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#ff6bad', '#ffffff'] });
         }
 
-        function changeSlide(direction) {
-            slideIndex = (slideIndex + direction + images.length) % images.length;
-            showSlide(slideIndex);
+        function startSlideshow() {
+            document.getElementById('letter-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+            document.getElementById('bgMusic').volume = 1.0;
+            updateSlide();
+            setInterval(floatHeart, 2500);
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
         }
 
-        function generateConfetti() {
-            const confettiContainer = document.createElement("div");
-            confettiContainer.style.position = "fixed";
-            confettiContainer.style.top = "0";
-            confettiContainer.style.left = "0";
-            confettiContainer.style.width = "100vw";
-            confettiContainer.style.height = "100vh";
-            confettiContainer.style.overflow = "hidden";
-            confettiContainer.style.pointerEvents = "none";
-            confettiContainer.style.zIndex = "9999";
-            document.body.appendChild(confettiContainer);
+        function updateSlide() {
+            document.getElementById('display-img').src = `images/${currentIndex + 1}.png`;
+            document.getElementById('display-wish').innerText = wishes[currentIndex];
+            document.getElementById('display-verse').innerText = verses[currentIndex];
+            document.getElementById('progress').innerText = `${currentIndex + 1} / 45`;
+            const nextBtn = document.getElementById('next-btn');
+            if (currentIndex === 44) {
+                nextBtn.innerText = "Final Surprise! ✨";
+                nextBtn.onclick = showStitch;
+            } else {
+                nextBtn.innerText = "Next ✨";
+                nextBtn.onclick = () => changeSlide(1);
+            }
+        }
 
-            function createConfettiPiece() {
-                const confetti = document.createElement("div");
-                confetti.className = "confetti";
-                confetti.style.position = "absolute";
-                confetti.style.width = "6px";
-                confetti.style.height = "6px";
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.top = "0";
-                confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.opacity = Math.random();
-                confetti.style.borderRadius = "50%";
-                confetti.style.animation = `fall ${3 + Math.random() * 2}s linear forwards`;
+        function changeSlide(dir) {
+            currentIndex += dir;
+            if (currentIndex < 0) currentIndex = 44;
+            if (currentIndex > 44) currentIndex = 0;
+            confetti({ particleCount: 20, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: ['#ff6bad'] });
+            confetti({ particleCount: 20, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: ['#ff6bad'] });
+            updateSlide();
+        }
 
-                confettiContainer.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 5000);
+        function shootEmoji(emoji) {
+            const scalar = 3;
+            const shape = confetti.shapeFromText({ text: emoji, scalar });
+            confetti({ shapes: [shape], particleCount: 15, scalar, spread: 80, origin: { y: 0.8 } });
+        }
+
+        function floatHeart() {
+            const shape = confetti.shapeFromText({ text: '❤️', scalar: 2 });
+            confetti({ shapes: [shape], particleCount: 1, origin: { x: Math.random(), y: 1.1 }, gravity: -0.2, ticks: 200, startVelocity: 5 });
+        }
+
+        function showStitch() {
+            document.getElementById('bgMusic').pause();
+            new Audio('stitch-laugh.mp3').play();
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('stitch-screen').style.display = 'flex';
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#0077b6', '#00b4d8', '#ffffff'] });
+            initScratchCard(); // Initialize scratch card
+        }
+
+        function sendHug() {
+            const defaults = { spread: 360, ticks: 100, gravity: 0, decay: 0.94, startVelocity: 30, shapes: ['heart'], colors: ['#FFC0CB', '#FF69B4'] };
+            confetti({ ...defaults, particleCount: 50, scalar: 2 });
+            if (navigator.vibrate) { navigator.vibrate([200, 100, 200]); }
+            alert("Virtual Hug Received! We love you, Tita Gina! ❤️");
+        }
+
+        // --- SCRATCH CARD LOGIC ---
+        function initScratchCard() {
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            let scratchedPixels = 0;
+            let totalPixels = canvas.width * canvas.height;
+            let hasWon = false;
+
+            // Fill with a pretty gold/silver gradient instead of flat gray
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#D4AF37'); // Gold
+            grad.addColorStop(0.5, '#FFD700'); // Bright Gold
+            grad.addColorStop(1, '#B8860B'); // Dark Gold
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#666';
+            ctx.font = 'bold 16px Quicksand';
+            ctx.textAlign = 'center';
+            ctx.fillText('Scratch for a surprise! ✨', 140, 65);
+
+            let isDrawing = false;
+            function scratch(e) {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+                const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+                
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 25, 0, Math.PI * 2); // Slightly bigger brush for easier scratching
+                ctx.fill();
+
+                // Check how much is scratched
+                if (!hasWon) {
+                    scratchedPixels++;
+                    if (scratchedPixels > 150) { // Fires after a bit of scratching
+                        hasWon = true;
+                        // Gold "Lucky" Confetti
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.8 },
+                            colors: ['#FFD700', '#FFA500', '#ffffff']
+                        });
+                    }
+                }
             }
 
-            setInterval(createConfettiPiece, 200);
+            canvas.addEventListener('mousedown', () => isDrawing = true);
+            canvas.addEventListener('touchstart', () => isDrawing = true);
+            window.addEventListener('mouseup', () => isDrawing = false);
+            window.addEventListener('touchend', () => isDrawing = false);
+            canvas.addEventListener('mousemove', scratch);
+            canvas.addEventListener('touchmove', scratch);
         }
     </script>
 </body>
